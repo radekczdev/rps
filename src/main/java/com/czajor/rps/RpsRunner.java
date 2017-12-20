@@ -3,24 +3,23 @@ package com.czajor.rps;
 import java.util.*;
 
 public class RpsRunner {
-    static private String username;
     static private int numberOfGames;
-    static private int userScore = 0;
-    static private int machineScore = 0;
     static private Scanner userInput = new Scanner(System.in);
     static private boolean end = false;
 
     public static void main(String[] args){
         System.out.println("Hi there! Please enter your name: ");
-        username = userInput.next();
+        Player user = new Player(InputScanner.scanName());
+        Player machine = new Player("Machine");
+
         System.out.println("Please provide number of games to play: ");
         numberOfGames = userInput.nextInt();
 
-        printMainMenu(username);
+        printMainMenu(user.getName());
 
         while(!end){
             System.out.println("Game has started, choose weapon: ");
-            System.out.println(solveMatch(numberOfGames) + " Won!");
+            System.out.println(Weapon.solveFight(numberOfGames, user, machine) + " Won!");
             System.out.println("Do you want to exit game? 'x' Or start a new game? 'n'");
             afterMatchScreen();
         }
@@ -32,48 +31,22 @@ public class RpsRunner {
             userChoice = userInput.next();
             switch (userChoice) {
                 case "x":
-                    System.out.println("Are you sure?");
-                    if (userInput.next().charAt(0) == 'y') {
+                    System.out.println("Are you sure? y/n");
+                    if (InputScanner.scanSure()) {
                         end = true;
                     }
                     break;
                 case "n":
                     System.out.println("Do you want to start a new game?");
-                    if (userInput.next().charAt(0) == 'y') {
+                    if (InputScanner.scanSure()) {
                         main(null);
                     }
                     break;
                 default:
-                    System.out.println("Wrong choice! Please input 'x' or 'n'");
+                    System.out.println("Wrong choice! Please input 'y' or 'n'");
 
             }
         }while(!(userChoice.equals("x") || userChoice.equals("y")));
-    }
-
-    public static String solveMatch(int numberOfGames){
-        Random rnd = new Random();
-        int userMove;
-        int machineMove;
-
-        for(int i = 0; i < numberOfGames; i++) {
-            do {
-                userMove = userInput.nextInt();
-            }while(!(userMove==1 || userMove==2 || userMove==3));
-            machineMove = rnd.nextInt(3) + 1;
-
-            if(userMove != machineMove){
-                if (userMove == machineMove - 1 || userMove == 3 && machineMove == 1) {
-                    userScore++;
-                } else
-                    machineScore++;
-            }
-
-            System.out.println("User weapon: " + userMove + ", Machine weapon: " + machineMove + "\nScore: user |" + userScore + " vs. " + machineScore + "| machine");
-        }
-        if(userScore > machineScore){
-            return username;
-        }
-        return "Machine";
     }
 
     public static void printMainMenu(String username){
