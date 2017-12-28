@@ -1,14 +1,31 @@
 package com.czajor.rps;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class ProgramScreens {
 
-    public static void printMainMenu(List menu){
+    public static void printMainMenu(List<String> menu){
         menu.forEach(System.out::println);
     }
 
-    // prints decision dialog: exit or new game?
+    public static List<String> getMainMenu(String username) {
+        List<String> mainMenu = new ArrayList<>();
+
+        mainMenu.add("Hi " + username);
+        mainMenu.add("Welcome to Paper-Rock-Scissors!");
+        mainMenu.add("Gameplay keys:");
+
+        for(Weapon weapon : GamePlay.getWeaponList()){
+            mainMenu.add(weapon.getId() + " - " + weapon);
+        }
+
+        mainMenu.add("x - exit game");
+        mainMenu.add("n - new game");
+
+        return mainMenu;
+    }
+
     public static boolean printAfterMatchScreen(){
         String userChoice;
         do {

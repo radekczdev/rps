@@ -1,7 +1,5 @@
 package com.czajor.rps;
 
-import java.util.Random;
-
 public class Weapon {
 
     private int id;
@@ -14,11 +12,6 @@ public class Weapon {
 
     public int getId(){
         return id;
-    }
-
-    // draw Weapon for Machine
-    public static Weapon drawMachineWeapon(){
-        return RpsRunner.getWeaponList().get(new Random().nextInt(3));
     }
 
     @Override

@@ -3,7 +3,7 @@ package com.czajor.rps;
 public class Player {
     private String name;
     private int score = 0;
-    private Weapon lastWeapon;
+    private Weapon currentWeapon;
 
     public Player(String name) {
         this.name = name;
@@ -17,12 +17,16 @@ public class Player {
         return score;
     }
 
-    public void setLastWeapon(Weapon lastWeapon) {
-        this.lastWeapon = lastWeapon;
+    public void clearScore() {
+        score = 0;
     }
 
-    public Weapon getLastWeapon() {
-        return lastWeapon;
+    public void setCurrentWeapon(Weapon currentWeapon) {
+        this.currentWeapon = currentWeapon;
+    }
+
+    public Weapon getCurrentWeapon() {
+        return currentWeapon;
     }
 
     public void addPoint() {
