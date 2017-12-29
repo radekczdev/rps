@@ -4,43 +4,42 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ProgramScreens {
+    private final List<String> MAIN_MENU_LINES = new ArrayList<>();
 
-    public static void printMainMenu(List<String> menu){
-        menu.forEach(System.out::println);
+    public void printMainMenu(){
+        MAIN_MENU_LINES.forEach(System.out::println);
     }
 
-    public static List<String> getMainMenu(String username) {
-        List<String> mainMenu = new ArrayList<>();
+    public void prepareMainMenu(String username, List<Weapon> weapons) {
+        MAIN_MENU_LINES.add("Hi " + username);
+        MAIN_MENU_LINES.add("Welcome to Paper-Rock-Scissors!");
+        MAIN_MENU_LINES.add("Gameplay keys:");
 
-        mainMenu.add("Hi " + username);
-        mainMenu.add("Welcome to Paper-Rock-Scissors!");
-        mainMenu.add("Gameplay keys:");
-
-        for(Weapon weapon : GamePlay.getWeaponList()){
-            mainMenu.add(weapon.getId() + " - " + weapon);
+        for(Weapon weapon : weapons){
+            MAIN_MENU_LINES.add(weapon.getId() + " - " + weapon);
         }
 
-        mainMenu.add("x - exit game");
-        mainMenu.add("n - new game");
-
-        return mainMenu;
+        MAIN_MENU_LINES.add("x - exit game");
+        MAIN_MENU_LINES.add("n - new game");
     }
 
-    public static boolean printAfterMatchScreen(){
+    public boolean printAfterMatchScreen(){
+        InputScanner inputScanner = new InputScanner();
         String userChoice;
+
         do {
             System.out.println("Do you want to exit game? 'x' Or start a new game? 'n'");
-            userChoice = InputScanner.scanString();
+            userChoice = inputScanner.scanString();
             switch (userChoice) {
                 case "x":
                     System.out.println("Are you sure you want to exit? y/n");
-                    if (!InputScanner.scanSure()) {
+                    if (!inputScanner.scanSure()) {
                         printAfterMatchScreen();
                     }
                     return true;
                 case "n":
                     System.out.println("Are you sure you want to start a new game? y/n");
-                    if (!InputScanner.scanSure()) {
+                    if (!inputScanner.scanSure()) {
                         printAfterMatchScreen();
                     }
                     break;

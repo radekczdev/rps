@@ -1,17 +1,18 @@
 package com.czajor.rps;
 
+import java.util.List;
 import java.util.Scanner;
 
 public class InputScanner {
-    public static boolean scanSure() {
+    public boolean scanSure() {
         char input = new Scanner(System.in).next().charAt(0);
         return input == 'y';
     }
 
-    public static int scanWeapon() {
+    public int scanWeapon(List<Weapon> weapons) {
         int input = new Scanner(System.in).nextInt();
 
-        if(GamePlay.getWeaponList().stream()
+        if(weapons.stream()
                 .map(n -> n.getId())
                 .anyMatch(x -> x == input)) {
             return input;
@@ -21,7 +22,7 @@ public class InputScanner {
         }
     }
 
-    public static String scanString() {
+    public String scanString() {
         return new Scanner(System.in).nextLine();
     }
 }

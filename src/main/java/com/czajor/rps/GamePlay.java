@@ -1,78 +1,84 @@
 package com.czajor.rps;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
 public class GamePlay {
-    public String gameplay(int numberOfGames, Player user, Player machine) {
-        int winner = 0;
+    private final int DRAW = 0;
+    private final int USER = 1;
+    private final int MACHINE = 2;
+    private final List<Weapon> WEAPONS = new ArrayList<>();
+    private final int[][] JUDGE_LIST = {{DRAW, USER, MACHINE, USER, MACHINE},
+            {MACHINE, DRAW, USER, MACHINE, USER},
+            {USER, MACHINE, DRAW, USER, MACHINE},
+            {MACHINE, USER, MACHINE, DRAW, USER},
+            {USER, MACHINE, USER, MACHINE, DRAW}};
+
+    public void prepareGame(){
+        createWeaponList();
+    }
+
+    public String returnWinner(Player... players){
+        List<Player> playersArray = new ArrayList<>();
+        playersArray.addAll(Arrays.asList(players));
+
+        if (playersArray.stream().map(Player::getScore).distinct().count() == 1) {
+            return "DRAW! no one";
+        }
+        return playersArray.stream().reduce((a, b) -> a.getScore() > b.getScore() ? a:b).get().getName();
+    }
+
+    public void gameplay(int numberOfGames, Player user, Player machine) {
+        int winner;
 
         for (int i = 0; i < numberOfGames; i++) {
             user.setCurrentWeapon(getWeaponList().get(readWeaponValidator(i)));
             machine.setCurrentWeapon(drawMachineWeapon());
-
             winner = fightSolver(user.getCurrentWeapon(), machine.getCurrentWeapon());
 
-            if (winner == 1) {
+            if (winner == USER) {
                 user.addPoint();
-            } else if (winner == 2) {
+            } else if (winner == MACHINE) {
                 machine.addPoint();
             }
 
             printCurrentStatistic(user, machine);
         }
-
-        if (user.getScore() == machine.getScore()) {
-            return "DRAW! no one";
-        }
-
-        List<Player> players = new ArrayList<>();
-        players.add(user);
-        players.add(machine);
-
-        for(Player pl : players){
-            pl.clearScore();
-        }
-
-        return players.get(winner - 1).getName();
     }
 
-    public static Weapon drawMachineWeapon() {
+    public void clearScores(Player... players){
+        Arrays.stream(players).forEach(Player::clearScore);
+    }
+
+    public Weapon drawMachineWeapon() {
         return getWeaponList().get(new Random().nextInt(getWeaponList().size()));
     }
 
-    public static List<Weapon> getWeaponList() {
-        List<Weapon> weapons = new ArrayList<>();
-
-        weapons.add(new Weapon(0, "scissors"));
-        weapons.add(new Weapon(1, "paper"));
-        weapons.add(new Weapon(2, "rock"));
-        weapons.add(new Weapon(3, "lizard"));
-        weapons.add(new Weapon(4, "spock"));
-
-        return weapons;
+    public List<Weapon> getWeaponList() {
+        return WEAPONS;
     }
 
-    public static int[][] getJudgeList() {
-        return new int[][]{
-                {0, 1, 2, 1, 2},
-                {2, 0, 1, 2, 1},
-                {1, 2, 0, 1, 2},
-                {2, 1, 2, 0, 1},
-                {1, 2, 1, 2, 0}
-        };
+    public void createWeaponList() {
+        WEAPONS.add(new Weapon(0, "scissors"));
+        WEAPONS.add(new Weapon(1, "paper"));
+        WEAPONS.add(new Weapon(2, "rock"));
+        WEAPONS.add(new Weapon(3, "lizard"));
+        WEAPONS.add(new Weapon(4, "spock"));
     }
 
-    private static int fightSolver(Weapon player1, Weapon player2) {
+    public int[][] getJudgeList() {
+        return JUDGE_LIST;
+    }
+
+    private int fightSolver(Weapon player1, Weapon player2) {
         return getJudgeList()[player1.getId()][player2.getId()];
     }
 
     public int readWeaponValidator(int i) {
         int weaponId;
+        InputScanner inputScanner = new InputScanner();
         do {
             System.out.println("Round " + i + ". Choose weapon: ");
-            weaponId = InputScanner.scanWeapon();
+            weaponId = inputScanner.scanWeapon(WEAPONS);
         } while (weaponId == -1);
         return weaponId;
     }
